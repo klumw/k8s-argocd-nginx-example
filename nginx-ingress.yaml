@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: nginx-argocd
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencryptresolver
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: nginx-argo.vanadium.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - nginx-argo.vanadium.dev
+      secretName: nginx-argo-tls
